@@ -1,0 +1,47 @@
+package users_transport_http
+
+import (
+	"net/http"
+
+	"github.com/haser16/golang-todo/internal/core/domain"
+	core_logger "github.com/haser16/golang-todo/internal/core/logger"
+	core_http_request "github.com/haser16/golang-todo/internal/core/transport/http/request"
+	core_http_response "github.com/haser16/golang-todo/internal/core/transport/http/response"
+)
+
+type CreateUserRequest struct {
+	FullName    string  `json:"full_name" validate:"required,min=3,max=100"`
+	PhoneNumber *string `json:"phone_number" validate:"omitempty,min=10,max=15,startswith=+"`
+}
+
+type CreateUserResponse UserDTOResponse
+
+func (h *UsersHTTPHandler) CreateUser(rw http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	log := core_logger.FormContext(ctx)
+	responseHandler := core_http_response.NewHTTPResponseHandler(log, rw)
+
+	var request CreateUserRequest
+	if err := core_http_request.DecodeAndValidateRequest(r, &request); err != nil {
+		responseHandler.ErrorResponse(err, "failed to decode and validate http request")
+
+		return
+	}
+
+	userDomain := domainFormDTO(request)
+
+	userDomain, err := h.UsersService.CreateUser(ctx, userDomain)
+	if err != nil {
+		responseHandler.ErrorResponse(err, "failed to create user")
+
+		return
+	}
+
+	response := CreateUserResponse(userDTOFromDomain(userDomain))
+
+	responseHandler.JSONResponse(response, http.StatusCreated)
+}
+
+func domainFormDTO(dto CreateUserRequest) domain.User {
+	return domain.NewUserUnInitialized(dto.FullName, dto.PhoneNumber)
+}
