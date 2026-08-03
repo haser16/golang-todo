@@ -24,6 +24,14 @@ env-cleanup:
 	  echo "Cleanup is closed"; \
 	fi
 
+logs-cleanup:
+	@read -p "Clean all log files? [y/N]: " ans; \
+	if [ "$$ans" = "y" ]; then \
+	  rm -rf ${PROJECT_ROOT}/out/logs && \
+	  echo "Files cleanup"; \
+	else \
+	  echo "Cleanup is closed"; \
+	fi
 
 migrate-create:
 	@if [ -z "$(seq)" ]; then \
