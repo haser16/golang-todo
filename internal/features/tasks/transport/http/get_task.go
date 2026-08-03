@@ -12,7 +12,7 @@ type GetTaskResponse TaskDTOResponse
 
 func (h *TasksHTTPHandler) GetTask(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	log := core_logger.FormContext(ctx)
+	log := core_logger.FromContext(ctx)
 	responseHandler := core_http_response.NewHTTPResponseHandler(log, rw)
 
 	taskID, err := core_http_request.GetIntPathValue(r, "id")
@@ -32,7 +32,7 @@ func (h *TasksHTTPHandler) GetTask(rw http.ResponseWriter, r *http.Request) {
 		)
 		return
 	}
-	
+
 	response := GetTaskResponse(taskDTOFromDomain(taskDomain))
 	responseHandler.JSONResponse(response, http.StatusOK)
 }
