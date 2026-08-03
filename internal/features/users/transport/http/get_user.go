@@ -12,7 +12,7 @@ type GetUserResponse UserDTOResponse
 
 func (h *UsersHTTPHandler) GetUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	log := core_logger.FormContext(ctx)
+	log := core_logger.FromContext(ctx)
 	responseHandler := core_http_response.NewHTTPResponseHandler(log, rw)
 
 	userID, err := core_http_request.GetIntPathValue(r, "id")

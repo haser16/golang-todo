@@ -29,7 +29,7 @@ func ToContext(
 	return context.WithValue(ctx, key, log)
 }
 
-func FormContext(ctx context.Context) *Logger {
+func FromContext(ctx context.Context) *Logger {
 	log, ok := ctx.Value(key).(*Logger)
 	if !ok {
 		panic("No logger in context")
