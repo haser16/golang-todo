@@ -9,6 +9,8 @@ import (
 	core_logger "github.com/haser16/golang-todo/internal/core/logger"
 	core_http_middleware "github.com/haser16/golang-todo/internal/core/transport/http/middleware"
 	"go.uber.org/zap"
+
+	"github.com/swaggo/http-swagger"
 )
 
 type HTTPServer struct {
@@ -79,4 +81,8 @@ func (s *HTTPServer) RegisterAPIRouters(routers ...*APIVersionRouter) {
 			http.StripPrefix(prefix, router.WithMiddleware()),
 		)
 	}
+}
+
+func (s *HTTPServer) RegisterSwagger() {
+	s.mux.Handle("/swagger/", httpSwagger.Handler(httpSwagger.URL("/swagger/doc.json")))
 }
